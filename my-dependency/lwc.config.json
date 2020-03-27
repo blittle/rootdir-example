@@ -1,0 +1,7 @@
+{
+  "modules": [{
+    "name": "my/dependency",
+    "path": "dependency.js"
+  }],
+  "expose": ["my/dependency"]
+}
