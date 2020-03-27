@@ -1,5 +1,7 @@
 import lwc from '@lwc/rollup-plugin';
 import replace from 'rollup-plugin-replace';
+import resolve from 'rollup-plugin-node-resolve';
+import visualizer from 'rollup-plugin-visualizer';
 import path from 'path';
 
 const outputDir = path.resolve(__dirname, `./src/dist`);
@@ -15,8 +17,12 @@ export default {
   },
   plugins: [
     lwc({
-      rootDir: "./src/modules"
+      rootDir: './src/modules',
+    }),
+    resolve({
+      dedupe: ['lwc'],
     }),
     replace({'process.env.NODE_ENV': JSON.stringify(env)}),
+    visualizer(),
   ],
 };
