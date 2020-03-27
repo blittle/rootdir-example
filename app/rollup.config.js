@@ -1,5 +1,4 @@
 import lwc from '@lwc/rollup-plugin';
-import resolve from 'rollup-plugin-node-resolve';
 import replace from 'rollup-plugin-replace';
 import path from 'path';
 
@@ -15,20 +14,8 @@ export default {
     file: path.join(outputDir, 'app.js'),
   },
   plugins: [
-    resolve({
-      mainFields: ['module', 'main'],
-      browser: true,
-    }),
     lwc({
-      rootDir: "./src",
-      modules: [
-        {
-          dir: 'modules',
-        },
-        {
-          npm: 'my-dependency',
-        },
-      ],
+      rootDir: "./src/modules"
     }),
     replace({'process.env.NODE_ENV': JSON.stringify(env)}),
   ],
