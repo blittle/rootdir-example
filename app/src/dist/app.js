@@ -6136,7 +6136,7 @@
       return valuesByField[field];
     }
   }
-  /** version: 1.3.2 */
+  /** version: 1.4.0-alpha3 */
 
   /*
    * Copyright (c) 2018, salesforce.com, inc.
@@ -6146,7 +6146,20 @@
    */
 
 
-  const defaultDefHTMLPropertyNames$1 = ['accessKey', 'dir', 'draggable', 'hidden', 'id', 'lang', 'tabIndex', 'title']; // Few more exceptions that are using the attribute name to match the property in lowercase.
+  const {
+    appendChild: appendChild$1,
+    insertBefore: insertBefore$1,
+    removeChild: removeChild$1,
+    replaceChild: replaceChild$1
+  } = Node.prototype;
+  /*
+   * Copyright (c) 2018, salesforce.com, inc.
+   * All rights reserved.
+   * SPDX-License-Identifier: MIT
+   * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
+   */
+
+  const defaultDefHTMLPropertyNames$1 = ['accessKey', 'dir', 'draggable', 'hidden', 'id', 'lang', 'spellcheck', 'tabIndex', 'title']; // Few more exceptions that are using the attribute name to match the property in lowercase.
   // this list was compiled from https://msdn.microsoft.com/en-us/library/ms533062(v=vs.85).aspx
   // and https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes
   // Note: this list most be in sync with the compiler as well.
@@ -6289,72 +6302,6 @@
    */
 
 
-  let nextTickCallbackQueue$1 = [];
-  const SPACE_CHAR$1 = 32;
-  const EmptyObject$1 = seal$2(create$3(null));
-  const EmptyArray$1 = seal$2([]);
-
-  function flushCallbackQueue$1() {
-    {
-      if (nextTickCallbackQueue$1.length === 0) {
-        throw new Error(`Internal Error: If callbackQueue is scheduled, it is because there must be at least one callback on this pending queue.`);
-      }
-    }
-
-    const callbacks = nextTickCallbackQueue$1;
-    nextTickCallbackQueue$1 = []; // reset to a new queue
-
-    for (let i = 0, len = callbacks.length; i < len; i += 1) {
-      callbacks[i]();
-    }
-  }
-
-  function addCallbackToNextTick$1(callback) {
-    {
-      if (!isFunction$2(callback)) {
-        throw new Error(`Internal Error: addCallbackToNextTick() can only accept a function callback`);
-      }
-    }
-
-    if (nextTickCallbackQueue$1.length === 0) {
-      Promise.resolve().then(flushCallbackQueue$1);
-    }
-
-    ArrayPush$3.call(nextTickCallbackQueue$1, callback);
-  }
-
-  function isCircularModuleDependency$1(value) {
-    return hasOwnProperty$1$1.call(value, '__circular__');
-  }
-  /**
-   * When LWC is used in the context of an Aura application, the compiler produces AMD
-   * modules, that doesn't resolve properly circular dependencies between modules. In order
-   * to circumvent this issue, the module loader returns a factory with a symbol attached
-   * to it.
-   *
-   * This method returns the resolved value if it received a factory as argument. Otherwise
-   * it returns the original value.
-   */
-
-
-  function resolveCircularModuleDependency$1(fn) {
-    {
-      if (!isFunction$2(fn)) {
-        throw new TypeError(`Circular module dependency must be a function.`);
-      }
-    }
-
-    return fn();
-  }
-
-  const useSyntheticShadow$1 = hasOwnProperty$1$1.call(Element.prototype, '$shadowToken$');
-  /*
-   * Copyright (c) 2018, salesforce.com, inc.
-   * All rights reserved.
-   * SPDX-License-Identifier: MIT
-   * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-   */
-
   function getComponentTag$1(vm) {
     // Element.prototype.tagName getter might be poisoned. We need to use a try/catch to protect the
     // engine internal when accessing the tagName property.
@@ -6419,6 +6366,48 @@
    * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
    */
 
+
+  let nextTickCallbackQueue$1 = [];
+  const SPACE_CHAR$1 = 32;
+  const EmptyObject$1 = seal$2(create$3(null));
+  const EmptyArray$1 = seal$2([]);
+
+  function flushCallbackQueue$1() {
+    {
+      if (nextTickCallbackQueue$1.length === 0) {
+        throw new Error(`Internal Error: If callbackQueue is scheduled, it is because there must be at least one callback on this pending queue.`);
+      }
+    }
+
+    const callbacks = nextTickCallbackQueue$1;
+    nextTickCallbackQueue$1 = []; // reset to a new queue
+
+    for (let i = 0, len = callbacks.length; i < len; i += 1) {
+      callbacks[i]();
+    }
+  }
+
+  function addCallbackToNextTick$1(callback) {
+    {
+      if (!isFunction$2(callback)) {
+        throw new Error(`Internal Error: addCallbackToNextTick() can only accept a function callback`);
+      }
+    }
+
+    if (nextTickCallbackQueue$1.length === 0) {
+      Promise.resolve().then(flushCallbackQueue$1);
+    }
+
+    ArrayPush$3.call(nextTickCallbackQueue$1, callback);
+  }
+
+  const useSyntheticShadow$1 = hasOwnProperty$1$1.call(Element.prototype, '$shadowToken$');
+  /*
+   * Copyright (c) 2018, salesforce.com, inc.
+   * All rights reserved.
+   * SPDX-License-Identifier: MIT
+   * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
+   */
 
   function handleEvent$1(event, vnode) {
     const {
@@ -6811,35 +6800,6 @@
    * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
    */
 
-  function createContext(vnode) {
-    const {
-      data: {
-        context
-      }
-    } = vnode;
-
-    if (isUndefined$3(context)) {
-      return;
-    }
-
-    const elm = vnode.elm;
-    const vm = getAssociatedVMIfPresent$1(elm);
-
-    if (!isUndefined$3(vm)) {
-      assign$2(vm.context, context);
-    }
-  }
-
-  const contextModule = {
-    create: createContext
-  };
-  /*
-   * Copyright (c) 2018, salesforce.com, inc.
-   * All rights reserved.
-   * SPDX-License-Identifier: MIT
-   * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-   */
-
   /**
   @license
   Copyright (c) 2015 Simon Friis Vindum.
@@ -7072,7 +7032,7 @@
     return `The \`${name}\` ${type} is available only on elements that use the \`lwc:dom="manual"\` directive.`;
   }
 
-  function getNodeRestrictionsDescriptors$1(node, options) {
+  function getNodeRestrictionsDescriptors$1(node, options = {}) {
     // and returns the first descriptor for the property
 
 
@@ -7190,7 +7150,7 @@
     return descriptors;
   }
 
-  function getShadowRootRestrictionsDescriptors$1(sr, options) {
+  function getShadowRootRestrictionsDescriptors$1(sr) {
     // thing when using the real shadow root, because if that's the case,
     // the component will not work when running with synthetic shadow.
 
@@ -7198,7 +7158,7 @@
     const originalQuerySelector = sr.querySelector;
     const originalQuerySelectorAll = sr.querySelectorAll;
     const originalAddEventListener = sr.addEventListener;
-    const descriptors = getNodeRestrictionsDescriptors$1(sr, options);
+    const descriptors = getNodeRestrictionsDescriptors$1(sr);
     const originalInnerHTMLDescriptor = getPropertyDescriptor$1(sr, 'innerHTML');
     const originalTextContentDescriptor = getPropertyDescriptor$1(sr, 'textContent');
     assign$2(descriptors, {
@@ -7281,9 +7241,9 @@
   // -----------------------------
 
 
-  function getCustomElementRestrictionsDescriptors$1(elm, options) {
+  function getCustomElementRestrictionsDescriptors$1(elm) {
 
-    const descriptors = getNodeRestrictionsDescriptors$1(elm, options);
+    const descriptors = getNodeRestrictionsDescriptors$1(elm);
     const originalAddEventListener = elm.addEventListener;
     const originalInnerHTMLDescriptor = getPropertyDescriptor$1(elm, 'innerHTML');
     const originalOuterHTMLDescriptor = getPropertyDescriptor$1(elm, 'outerHTML');
@@ -7429,23 +7389,18 @@
     return descriptors;
   }
 
-  function markNodeFromVNode(node) {
-
-    node.$fromTemplate$ = true;
-  }
-
   function patchElementWithRestrictions$1(elm, options) {
     defineProperties$2(elm, getElementRestrictionsDescriptors$1(elm, options));
   } // This routine will prevent access to certain properties on a shadow root instance to guarantee
   // that all components will work fine in IE11 and other browsers without shadow dom support.
 
 
-  function patchShadowRootWithRestrictions$1(sr, options) {
-    defineProperties$2(sr, getShadowRootRestrictionsDescriptors$1(sr, options));
+  function patchShadowRootWithRestrictions$1(sr) {
+    defineProperties$2(sr, getShadowRootRestrictionsDescriptors$1(sr));
   }
 
-  function patchCustomElementWithRestrictions$1(elm, options) {
-    const restrictionsDescriptors = getCustomElementRestrictionsDescriptors$1(elm, options);
+  function patchCustomElementWithRestrictions$1(elm) {
+    const restrictionsDescriptors = getCustomElementRestrictionsDescriptors$1(elm);
     const elmProto = getPrototypeOf$3(elm);
     setPrototypeOf$2(elm, create$3(elmProto, restrictionsDescriptors));
   }
@@ -7532,7 +7487,6 @@
     modStaticStyle$1.create(vnode);
     modComputedClassName$1.create(vnode);
     modComputedStyle$1.create(vnode);
-    contextModule.create(vnode);
   }
 
   var LWCDOMMode$1;
@@ -7656,10 +7610,6 @@
     {
       assert$1.isTrue(isArray$1$1(vnode.children), `Invalid vnode for a custom element, it must have children defined.`);
     }
-
-    {
-      patchCustomElementWithRestrictions$1(elm, EmptyObject$1);
-    }
   }
 
   function createCustomElmHook$1(vnode) {
@@ -7673,7 +7623,6 @@
     modStaticStyle$1.create(vnode);
     modComputedClassName$1.create(vnode);
     modComputedStyle$1.create(vnode);
-    contextModule.create(vnode);
   }
 
   function createChildrenHook$1(vnode) {
@@ -7755,32 +7704,6 @@
    */
 
 
-  const Services$1 = create$3(null);
-
-  function invokeServiceHook$1(vm, cbs) {
-    {
-      assert$1.isTrue(isArray$1$1(cbs) && cbs.length > 0, `Optimize invokeServiceHook() to be invoked only when needed`);
-    }
-
-    const {
-      component,
-      data,
-      def,
-      context
-    } = vm;
-
-    for (let i = 0, len = cbs.length; i < len; ++i) {
-      cbs[i].call(undefined, component, data, def, context);
-    }
-  }
-  /*
-   * Copyright (c) 2018, salesforce.com, inc.
-   * All rights reserved.
-   * SPDX-License-Identifier: MIT
-   * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-   */
-
-
   const CHAR_S$1 = 115;
   const CHAR_V$1 = 118;
   const CHAR_G$1 = 103;
@@ -7790,24 +7713,6 @@
     create: vnode => {
       vnode.elm = document.createTextNode(vnode.text);
       linkNodeToShadow$1(vnode);
-
-      {
-        markNodeFromVNode(vnode.elm);
-      }
-    },
-    update: updateNodeHook$1,
-    insert: insertNodeHook$1,
-    move: insertNodeHook$1,
-    remove: removeNodeHook$1
-  };
-  const CommentHook = {
-    create: vnode => {
-      vnode.elm = document.createComment(vnode.text);
-      linkNodeToShadow$1(vnode);
-
-      {
-        markNodeFromVNode(vnode.elm);
-      }
     },
     update: updateNodeHook$1,
     insert: insertNodeHook$1,
@@ -7838,11 +7743,6 @@
       }
 
       linkNodeToShadow$1(vnode);
-
-      {
-        markNodeFromVNode(vnode.elm);
-      }
-
       fallbackElmHook$1(vnode);
       createElmHook$1(vnode);
     },
@@ -7869,11 +7769,6 @@
       } = vnode;
       vnode.elm = document.createElement(sel);
       linkNodeToShadow$1(vnode);
-
-      {
-        markNodeFromVNode(vnode.elm);
-      }
-
       createViewModelHook$1(vnode);
       allocateChildrenHook$1(vnode);
       createCustomElmHook$1(vnode);
@@ -8027,10 +7922,6 @@
 
 
   function c$1(sel, Ctor, data, children = EmptyArray$1) {
-    if (isCircularModuleDependency$1(Ctor)) {
-      Ctor = resolveCircularModuleDependency$1(Ctor);
-    }
-
     const vmBeingRendered = getVMBeingRendered$1();
 
     {
@@ -8202,23 +8093,6 @@
       hook: TextHook$1,
       owner: getVMBeingRendered$1()
     };
-  } // comment node
-
-
-  function p(text) {
-    const data = EmptyObject$1;
-    const sel = '!';
-    let children, key, elm;
-    return {
-      sel,
-      data,
-      children,
-      text,
-      elm,
-      key,
-      hook: CommentHook,
-      owner: getVMBeingRendered$1()
-    };
   } // [d]ynamic value to produce a text vnode
 
 
@@ -8241,65 +8115,6 @@
     const vm = vmBeingRendered;
     return function (event) {
       invokeEventListener$1(vm, fn, vm.component, event);
-    };
-  } // [f]unction_[b]ind
-
-
-  function fb(fn) {
-    const vmBeingRendered = getVMBeingRendered$1();
-
-    if (isNull$1(vmBeingRendered)) {
-      throw new Error();
-    }
-
-    const vm = vmBeingRendered;
-    return function () {
-      return invokeComponentCallback$1(vm, fn, ArraySlice$1$1.call(arguments));
-    };
-  } // [l]ocator_[l]istener function
-
-
-  function ll(originalHandler, id, context) {
-    const vm = getVMBeingRendered$1();
-
-    if (isNull$1(vm)) {
-      throw new Error();
-    } // bind the original handler with b() so we can call it
-    // after resolving the locator
-
-
-    const eventListener = b$1(originalHandler); // create a wrapping handler to resolve locator, and
-    // then invoke the original handler.
-
-    return function (event) {
-      // located service for the locator metadata
-      const {
-        context: {
-          locator
-        }
-      } = vm;
-
-      if (!isUndefined$3(locator)) {
-        const {
-          locator: locatorService
-        } = Services$1;
-
-        if (locatorService) {
-          locator.resolved = {
-            target: id,
-            host: locator.id,
-            targetContext: isFunction$2(context) && context(),
-            hostContext: isFunction$2(locator.context) && locator.context()
-          }; // a registered `locator` service will be invoked with
-          // access to the context.locator.resolved, which will contain:
-          // outer id, outer context, inner id, and inner context
-
-          invokeServiceHook$1(vm, locatorService);
-        }
-      } // invoke original event listener via b()
-
-
-      eventListener(event);
     };
   } // [k]ey function
 
@@ -8442,11 +8257,8 @@
     i: i$1,
     f: f$1,
     t: t$1,
-    p: p,
     d: d$1,
     b: b$1,
-    fb: fb,
-    ll: ll,
     k: k$1,
     gid: gid$1,
     fid: fid$1,
@@ -8981,6 +8793,32 @@
     }, noop$2$1);
   }
   /*
+   * Copyright (c) 2018, salesforce.com, inc.
+   * All rights reserved.
+   * SPDX-License-Identifier: MIT
+   * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
+   */
+
+
+  const Services$1 = create$3(null);
+
+  function invokeServiceHook$1(vm, cbs) {
+    {
+      assert$1.isTrue(isArray$1$1(cbs) && cbs.length > 0, `Optimize invokeServiceHook() to be invoked only when needed`);
+    }
+
+    const {
+      component,
+      data,
+      def,
+      context
+    } = vm;
+
+    for (let i = 0, len = cbs.length; i < len; ++i) {
+      cbs[i].call(undefined, component, data, def, context);
+    }
+  }
+  /*
    * Copyright (c) 2019, salesforce.com, inc.
    * All rights reserved.
    * SPDX-License-Identifier: MIT
@@ -9464,8 +9302,9 @@
     vm.cmpRoot = cmpRoot;
 
     {
+      patchCustomElementWithRestrictions$1(elm);
       patchComponentWithRestrictions$1(component);
-      patchShadowRootWithRestrictions$1(cmpRoot, EmptyObject$1);
+      patchShadowRootWithRestrictions$1(cmpRoot);
     }
 
     return this;
@@ -9678,10 +9517,7 @@
       return `[object ${vm.def.name}]`;
     }
 
-  }; // Typescript is inferring the wrong function type for this particular
-  // overloaded method: https://github.com/Microsoft/TypeScript/issues/27972
-  // @ts-ignore type-mismatch
-
+  };
   const baseDescriptors$1 = ArrayReduce$1.call(getOwnPropertyNames$3(HTMLElementOriginalDescriptors$1), (descriptors, propName) => {
     descriptors[propName] = createBridgeToElementDescriptor$1(propName, HTMLElementOriginalDescriptors$1[propName]);
     return descriptors;
@@ -10563,7 +10399,7 @@
 
 
   const hasNativeSymbolsSupport$1$1 = Symbol('x').toString() === 'Symbol(x)';
-  /** version: 1.3.2 */
+  /** version: 1.4.0-alpha3 */
 
   /*
    * Copyright (c) 2018, salesforce.com, inc.
@@ -10638,6 +10474,21 @@
 
   function getDecoratorsRegisteredMeta$1(Ctor) {
     return signedDecoratorToMetaMap$1.get(Ctor);
+  }
+  /*
+   * Copyright (c) 2020, salesforce.com, inc.
+   * All rights reserved.
+   * SPDX-License-Identifier: MIT
+   * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
+   */
+
+
+  function resolveCircularModuleDependency$1(fn) {
+    return fn();
+  }
+
+  function isCircularModuleDependency$1(obj) {
+    return isFunction$2(obj) && hasOwnProperty$1$1.call(obj, '__circular__');
   }
   /*
    * Copyright (c) 2018, salesforce.com, inc.
@@ -10766,8 +10617,8 @@
     return def;
   }
   /**
-   * EXPERIMENTAL: This function allows for the identification of LWC
-   * constructors. This API is subject to change or being removed.
+   * EXPERIMENTAL: This function allows for the identification of LWC constructors. This API is
+   * subject to change or being removed.
    */
 
 
@@ -10788,8 +10639,8 @@
 
     do {
       if (isCircularModuleDependency$1(current)) {
-        const circularResolved = resolveCircularModuleDependency$1(current); // If the circular function returns itself, that's the signal that we have hit the end of the proto chain,
-        // which must always be a valid base constructor.
+        const circularResolved = resolveCircularModuleDependency$1(current); // If the circular function returns itself, that's the signal that we have hit the end
+        // of the proto chain, which must always be a valid base constructor.
 
         if (circularResolved === current) {
           return true;
@@ -10807,15 +10658,19 @@
     return false;
   }
   /**
-   * EXPERIMENTAL: This function allows for the collection of internal
-   * component metadata. This API is subject to change or being removed.
+   * EXPERIMENTAL: This function allows for the collection of internal component metadata. This API is
+   * subject to change or being removed.
    */
 
 
-  function getComponentDef$1(Ctor, subclassComponentName) {
+  function getComponentDef$1(Ctor, name) {
     let def = CtorToDefMap$1.get(Ctor);
 
     if (isUndefined$3(def)) {
+      if (isCircularModuleDependency$1(Ctor)) {
+        Ctor = resolveCircularModuleDependency$1(Ctor);
+      }
+
       if (!isComponentConstructor$1(Ctor)) {
         throw new TypeError(`${Ctor} is not a valid component, or does not extends LightningElement from "lwc". You probably forgot to add the extend clause on the class declaration.`);
       }
@@ -10830,7 +10685,7 @@
         };
       }
 
-      def = createComponentDef$1(Ctor, meta, subclassComponentName || Ctor.name);
+      def = createComponentDef$1(Ctor, meta, name || Ctor.name);
       CtorToDefMap$1.set(Ctor, def);
     }
 
@@ -10841,10 +10696,7 @@
 
   function setElementProto$1(elm, def) {
     setPrototypeOf$2(elm, def.bridge.prototype);
-  } // Typescript is inferring the wrong function type for this particular
-  // overloaded method: https://github.com/Microsoft/TypeScript/issues/27972
-  // @ts-ignore type-mismatch
-
+  }
 
   const HTML_PROPS$1 = ArrayReduce$1.call(getOwnPropertyNames$3(HTMLElementOriginalDescriptors$1), (props, propName) => {
     const attrName = getAttrNameFromPropName$1(propName);
@@ -10929,7 +10781,7 @@
     }
 
     resetComponentStateWhenRemoved$1(vm);
-  } // this method is triggered by the removal of a root element from the DOM.
+  }
 
   function createVM$1(elm, Ctor, options) {
     {
@@ -10985,6 +10837,7 @@
 
     const initializedVm = uninitializedVm;
     linkComponent$1(initializedVm);
+    return initializedVm;
   }
 
   function assertIsVM$1(obj) {
@@ -11388,19 +11241,6 @@
    */
 
 
-  const {
-    appendChild: appendChild$1,
-    insertBefore: insertBefore$1,
-    removeChild: removeChild$1,
-    replaceChild: replaceChild$1
-  } = Node.prototype;
-  /*
-   * Copyright (c) 2018, salesforce.com, inc.
-   * All rights reserved.
-   * SPDX-License-Identifier: MIT
-   * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
-   */
-
   const ConnectingSlot$1 = createHiddenField$1('connecting', 'engine');
   const DisconnectingSlot$1 = createHiddenField$1('disconnecting', 'engine');
 
@@ -11412,12 +11252,12 @@
     const fn = getHiddenField$1(node, slot);
 
     if (!isUndefined$3(fn)) {
-      fn();
+      fn(node);
     }
 
     return node; // for convenience
-  } // monkey patching Node methods to be able to detect the insertions and removal of
-  // root elements created via createElement.
+  } // Monkey patching Node methods to be able to detect the insertions and removal of root elements
+  // created via createElement.
 
 
   assign$2(Node.prototype, {
@@ -11444,6 +11284,7 @@
     }
 
   });
+  /** version: 1.4.0-alpha3 */
 
   function tmpl($api, $cmp, $slotset, $ctx) {
     const {
